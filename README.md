@@ -1,3 +1,10 @@
+## Assumptions
+All entries are database viable, but when querying from the database, we only query for ones with a price and display them.
+
+## Technologies
+Linux(Ubuntu), VScode, Flask(Python), React(Javascript)
+SQLAlchemy
+
 
 ## Startup
     Two Commands are required to function
