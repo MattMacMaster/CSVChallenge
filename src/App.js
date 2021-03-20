@@ -11,8 +11,6 @@ function ApiCall2() {
             .then(response => console.log(response) )
 }
 
-
-
 function App() {
   const [started, setStart] = useState(true);
   const [data, setData] = useState([]);
@@ -26,11 +24,13 @@ function App() {
               .then(response => console.log(response) )
   }
   function Start() {
+    //Removes button to prevent more clicks
+    setStart(false);
     //ApiCall is for starting the readings from the CSV ot be put into the database
-    ApiCall();
+    //ApiCall();
     //ApiQuery begins the process of querying the database for 
     ApiQuery();
-    setStart(false);
+    
   }
   return (
     <div className="App">
