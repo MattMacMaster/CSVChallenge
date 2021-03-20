@@ -2,20 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 
 db = SQLAlchemy()
- 
-class InfoModel(db.Model):
-    __tablename__ = 'info_table'
- 
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String())
-    age = db.Column(db.Integer())
- 
-    def __init__(self, name,age):
-        self.name = name
-        self.age = age
- 
-    def __repr__(self):
-        return f"{self.name}:{self.age}"
 
 class BitModel(db.Model, SerializerMixin):
     __tablename__ = 'bitcoin_table'
@@ -39,6 +25,8 @@ class BitModel(db.Model, SerializerMixin):
     median_tx_value_usd = db.Column(db.Float())
     median_fee = db.Column(db.Float())
     block_size = db.Column(db.Integer())
+
+
     
  
     def __init__(
@@ -59,6 +47,7 @@ class BitModel(db.Model, SerializerMixin):
         block_size,
         ):
         self.date = date
+        self.price_usd = price_usd
         self.tx_volume_usd = tx_volume_usd
         self.adjusted_tx_volume_usd = adjusted_tx_volume_usd
         self.tx_count = tx_count

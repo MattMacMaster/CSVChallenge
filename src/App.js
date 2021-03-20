@@ -1,15 +1,8 @@
-import logo from './logo.svg';
 import './App.css';
 import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 
-
-
-function ApiCall2() {
-  axios.get('http://localhost:3000/time')
-            .then(response => console.log(response) )
-}
 
 function App() {
   const [started, setStart] = useState(true);
@@ -21,21 +14,20 @@ function App() {
   }
   function ApiQuery() {
     axios.get('http://localhost:3000/query')
-              .then(response => console.log(response) )
+              .then(response => setData(response.data) )
   }
   function Start() {
     //Removes button to prevent more clicks
     setStart(false);
     //ApiCall is for starting the readings from the CSV ot be put into the database
-    //ApiCall();
+    ApiCall();
     //ApiQuery begins the process of querying the database for 
-    ApiQuery();
+    //ApiQuery();
     
   }
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
           BitCoin Loader and Grapher
         </p>
@@ -46,8 +38,8 @@ function App() {
         </Button> 
         } 
         
-        <Button variant="contained" color="primary" onClick={() => { ApiCall2() }}>
-          Test
+        <Button variant="contained" color="primary" onClick={() => { ApiQuery() }}>
+          Update
         </Button>
         <br/>
 

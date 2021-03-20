@@ -44,51 +44,46 @@ def loop_entries():
     #This component is responsible for writing each entry to the database
     #Needs to loop through the csv and put each entry into database
     counter = 1
-    with open('../docs/bitcoin_csv.csv', newline='') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-        #counter used to skip heading 
-        #Empty needs to be converted to None Type
-        for row in spamreader:
-            if(counter!=1):
-                new_entry = BitModel(
-                date = row[0] if row[0] != '' else None,
-                tx_volume_usd = row[1] if row[1] != '' else None,
-                adjusted_tx_volume_usd = row[2] if row[2] != '' else None,
-                tx_count = row[3] if row[3] != '' else None,
-                marketcap_usd = row[4] if row[4] != '' else None,
-                price_usd = row[5] if row[5] != '' else None,
-                exchange_volume_usd = row[6] if row[6] != '' else None,
-                generated_coins = row[7] if row[7] != '' else None,
-                fees = row[8] if row[8] != '' else None,
-                active_addresses = row[9] if row[9] != '' else None,
-                average_difficulty = row[10] if row[10] != '' else None,
-                payment_count = row[11] if row[11] != '' else None,
-                median_tx_value_usd = row[12] if row[12] != '' else None,
-                median_fee = row[13] if row[13] != '' else None,
-                block_size = row[14] if row[14] != '' else None,
-                )       
-                
-                db.session.add(new_entry)
-                db.session.commit()
-                
-                time.sleep(1)
-            else:
-                counter = counter + 1
-                pass
+    while True:
+        with open('../docs/bitcoin_csv.csv', newline='') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            #counter used to skip heading 
+            #Empty needs to be converted to None Type
+            for row in spamreader:
+                if(counter!=1 and row[5] != ''):
+                    print(row)
 
-    return {}
+                    new_entry = BitModel(
+                    date = row[0] if row[0] != '' else None,
+                    tx_volume_usd = row[1] if row[1] != '' else None,
+                    adjusted_tx_volume_usd = row[2] if row[2] != '' else None,
+                    tx_count = row[3] if row[3] != '' else None,
+                    marketcap_usd = row[4] if row[4] != '' else None,
+                    price_usd = row[5] if row[5] != '' else None,
+                    exchange_volume_usd = row[6] if row[6] != '' else None,
+                    generated_coins = row[7] if row[7] != '' else None,
+                    fees = row[8] if row[8] != '' else None,
+                    active_addresses = row[9] if row[9] != '' else None,
+                    average_difficulty = row[10] if row[10] != '' else None,
+                    payment_count = row[11] if row[11] != '' else None,
+                    median_tx_value_usd = row[12] if row[12] != '' else None,
+                    median_fee = row[13] if row[13] != '' else None,
+                    block_size = row[14] if row[14] != '' else None,
+                    )       
+                    db.session.add(new_entry)
+                    db.session.commit()
+                    
+                    time.sleep(1)
+                else:
+                    counter = counter + 1
+                    pass
 
-@app.route('/time')
-def get_current_time():
-    new_user = InfoModel(name='name', age=6)
-    db.session.add(new_user)
-    db.session.commit()
-    return {'time': time.time()}
+        return {}
 
 @app.route('/query')
 def get_data():
-    value = db.session.query(BitModel).all()
-    #BitModels are not serializablso i need to fix that 
+    value = db.session.query(BitModel).filter(BitModel.price_usd != None)
+    #BitModels are not serializable so built workaround
     serialized = []
     for x in value:
         serialized.append(x.to_dict())
