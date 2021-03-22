@@ -82,16 +82,21 @@ def loop_entries():
 
 @app.route('/query')
 def get_data():
-    value = db.session.query(BitModel).filter(BitModel.price_usd != None)
+    value = db.session.query(BitModel).filter(BitModel.price_usd != None).order_by(BitModel.date)
     #BitModels are not serializable so built workaround
     serialized = [{"data": []}]
 
     for x in value:
+
+
         value = x.to_dict()
         value["x"] = value.pop("date")
         value["y"] = value.pop("price_usd")
         serialized[0]["data"].append(value)
-        print(serialized)
     return {'data':serialized}
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)

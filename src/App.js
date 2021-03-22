@@ -29,7 +29,8 @@ function App() {
     <ResponsiveLine
         data={data}
         lineWidth={0}
-        margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+        isInteractive={false}
+        margin={{ top: 50, right: 11, bottom: 50, left: 60 }}
         xScale={{ type: 'point' }}
         yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
         yFormat=" >-.2f"
@@ -39,7 +40,7 @@ function App() {
             orient: 'bottom',
             tickSize: 5,
             tickPadding: 5,
-            tickRotation: 90,
+            tickRotation: 75,
             legend: 'Date',
             legendOffset: 36,
             legendPosition: 'middle'
@@ -104,12 +105,10 @@ function App() {
         } 
       </header>
         
-        <br/>
 
       <div className="Graph">
         <MyResponsiveLine data= {data} />
       </div>
-    
     </div>
   );
 }
