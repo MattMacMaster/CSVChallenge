@@ -7,13 +7,28 @@ import { ResponsiveLine } from '@nivo/line'
 
 
 function App() {
-  const [started, setStart] = useState(true);
+  //Determins if the program is started or stopped
+  const [started, setStart] = useState(false);
+  //Updating variable according to request results
   const [data, setData] = useState([]);
 
-  
+  //enables an interval to loop the request for the data form the DB
+  useEffect(() => {
+    if(started){
+      const interval = setInterval(() => {
+        ApiQuery();
+      }, 1000);
+   
+      return () => clearInterval(interval);
+    }
+    
+  }, [started]);
+
+  //Using Nivo Graph using mostly default parameters
   const MyResponsiveLine = ({ data /* see data tab */ }) => (
     <ResponsiveLine
         data={data}
+        lineWidth={0}
         margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
         xScale={{ type: 'point' }}
         yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
@@ -47,35 +62,28 @@ function App() {
         
     />
 )
-
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-
+  //This function makes the flask server start the csv read->write process to the DB
+  //May add a means of clearing the database on start to have a clean beginning
   function ApiCall() {
     axios.get('http://localhost:3000/start')
               .then(response => console.log(response) )
   }
-  async function ApiQuery() {
-    while (true) {
-
-      axios.get('http://localhost:3000/query')
-      .then(response => setData(response.data.data) )      
-      await sleep(3000);
-
+  //This function queries the DB for all its current datapoints
+  function ApiQuery() {     
+        axios.get('http://localhost:3000/query')
+      .then(response => setData(response.data.data) ) 
     }
     
-  }
-  function Start() {
+  function ChangeState(value) {
     //Removes button to prevent more clicks
-    setStart(false);
+    setStart(value);
     //ApiCall is for starting the readings from the CSV ot be put into the database
     ApiCall();
-    //ApiQuery begins the process of querying the database for 
-    ApiQuery();
+
+    
+    
   }
+  
 
   return (
     <div className="App">
@@ -83,25 +91,25 @@ function sleep(ms) {
         <h1>
           BitCoin Grapher
         </h1>
+        <p>By: Matthew MacMaster</p>
+        {!started && 
+        <Button variant="contained" color="primary" onClick={() => ChangeState(true) }>
+          Start
+        </Button> 
+        }
+        {started && 
+        <Button variant="contained" color="primary" onClick={ () => ChangeState(false) }>
+          Stop
+        </Button> 
+        } 
       </header>
+        
+        <br/>
+
       <div className="Graph">
         <MyResponsiveLine data= {data} />
       </div>
-
-      {started && 
-        <Button variant="contained" color="primary" onClick={() => Start() }>
-          Start
-        </Button> 
-        } 
-        
-        <br/>
-        
-        <br/>
-        <Button variant="contained" color="primary" onClick={() => { Start() }}>
-          Update
-        </Button>
-
-      <p>By: Matthew MacMaster</p>
+    
     </div>
   );
 }

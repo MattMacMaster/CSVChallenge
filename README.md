@@ -4,7 +4,10 @@ All entries are database viable, but when querying from the database, we only qu
 ## Technologies
 Linux(Ubuntu), VScode, Flask(Python), React(Javascript)
 SQLAlchemy
-
+## Needed steps for Demonstration
+    Cleared Database
+    npm start
+    flask run
 
 ## Startup
     Two Commands are required to function
