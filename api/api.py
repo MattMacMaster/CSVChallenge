@@ -4,7 +4,7 @@ import json
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from models import db, InfoModel, BitModel
+from models import db, BitModel
 
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
@@ -84,9 +84,14 @@ def loop_entries():
 def get_data():
     value = db.session.query(BitModel).filter(BitModel.price_usd != None)
     #BitModels are not serializable so built workaround
-    serialized = []
+    serialized = [{"data": []}]
+
     for x in value:
-        serialized.append(x.to_dict())
+        value = x.to_dict()
+        value["x"] = value.pop("date")
+        value["y"] = value.pop("price_usd")
+        serialized[0]["data"].append(value)
+        print(serialized)
     return {'data':serialized}
 if __name__ == '__main__':
     app.run(debug=True)
