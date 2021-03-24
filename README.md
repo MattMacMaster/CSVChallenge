@@ -8,7 +8,7 @@ reading from the database and updating a graphic to view the information
 
 ## Technologies
 Linux(Ubuntu- Bionic Beaver), VScode(IDE), Flask(Python), React(Javascript,HTML,CSS)
-Libraires of note: SQLAlchemy, Nivo, and  
+Libraires of note: SQLAlchemy, Nivo
 
 ## Needed steps for Demonstration
     Cleared Database
