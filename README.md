@@ -11,7 +11,7 @@ Linux(Ubuntu- Bionic Beaver), VScode(IDE), Flask(Python), React(Javascript,HTML,
 Libraires of note: SQLAlchemy, Nivo
 
 ## Needed steps for Demonstration
-Have a clear database
+    Have a clear database
     npm start - start frontend 
     flask run - start backend
 
