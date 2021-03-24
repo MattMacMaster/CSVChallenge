@@ -11,7 +11,7 @@ Linux(Ubuntu- Bionic Beaver), VScode(IDE), Flask(Python), React(Javascript,HTML,
 Libraires of note: SQLAlchemy, Nivo
 
 ## Needed steps for Demonstration
-    Cleared Database
+Have a clear database
     npm start - start frontend 
     flask run - start backend
 
@@ -37,6 +37,6 @@ Libraires of note: SQLAlchemy, Nivo
         source venv/bin/activate -> enter vm for versioning reasons
         flask run
 ## Future Additions
-    Add a means to pause the writing to DB instead of infinite loop.
-    Add a snackbar response for requests(Error and Success).
-    More Styling.
+Add a means to pause the writing to DB instead of infinite loop.
+Add a snackbar response for requests(Error and Success).
+More Styling.
