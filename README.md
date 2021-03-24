@@ -19,7 +19,7 @@ Libraires of note: SQLAlchemy, Nivo
     psql -U postgres
     
     Credentials in a env file
-    Using a simple starter database - 
+    Using a simple starter database, which I will be using postgresql - 
 
     postgres username
     test password
@@ -28,7 +28,8 @@ Libraires of note: SQLAlchemy, Nivo
 ## Startup
 
     Two Commands are required to function
-    if needed: export FLASK_APP=api.py
+    if needed: 
+    export FLASK_APP=api.py
 
     Startup React -> npm start
     Startup Flask Backend -> 
