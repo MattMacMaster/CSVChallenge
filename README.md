@@ -38,5 +38,7 @@ Libraires of note: SQLAlchemy, Nivo
         flask run
 ## Future Additions
 Add a means to pause the writing to DB instead of infinite loop.
+
 Add a snackbar response for requests(Error and Success).
+
 More Styling.
