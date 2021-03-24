@@ -1,6 +1,6 @@
 ## About
-This project was a task given to me by a company as a challenge during the hiring process
-The concept of this project is to have 3 components working together to complete said task
+This project was a task given to me by a company as a challenge during the hiring process.
+The concept of this project is to have 3 components working together to complete said task.
 
 The task being have a csv file of pricing data written to a database and have the frontend actively 
 reading from the database and updating a graphic to view the information
