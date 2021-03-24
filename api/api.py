@@ -5,40 +5,18 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from models import db, BitModel
+import psycopg2
 
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
-def new_alchemy_encoder():
-    _visited_objs = []
-
-    class AlchemyEncoder(json.JSONEncoder):
-        def default(self, obj):
-            if isinstance(obj.__class__, DeclarativeMeta):
-                # don't re-visit self
-                if obj in _visited_objs:
-                    return None
-                _visited_objs.append(obj)
-
-                # an SQLAlchemy class
-                fields = {}
-                for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
-                    fields[field] = obj.__getattribute__(field)
-                # a json-encodable dict
-                return fields
-
-            return json.JSONEncoder.default(self, obj)
-
-    return AlchemyEncoder
-
+#Setting up Database configurations - Add to ENV 
 app = Flask(__name__)
-
-
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:test@localhost:5432/flask"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 migrate = Migrate(app, db)
 
-#This is solely used to begin the write process to the database
+#This route will begin the infinite loop of writing to the DB
 @app.route('/start')
 def loop_entries():
     #This component is responsible for writing each entry to the database
@@ -47,12 +25,10 @@ def loop_entries():
     while True:
         with open('../docs/bitcoin_csv.csv', newline='') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-            #counter used to skip heading 
-            #Empty needs to be converted to None Type
+            #Empty needs to be converted to None Type or it will fail
             for row in spamreader:
                 if(counter!=1 and row[5] != ''):
-                    print(row)
-
+                    #Taking a row and assigning it to its respective value in the model
                     new_entry = BitModel(
                     date = row[0] if row[0] != '' else None,
                     tx_volume_usd = row[1] if row[1] != '' else None,
@@ -80,6 +56,7 @@ def loop_entries():
 
         return {}
 
+#This route is for querying and serializing the data and returning it to the frontend
 @app.route('/query')
 def get_data():
     value = db.session.query(BitModel).filter(BitModel.price_usd != None).order_by(BitModel.date)
@@ -87,16 +64,47 @@ def get_data():
     serialized = [{"data": []}]
 
     for x in value:
-
-
         value = x.to_dict()
         value["x"] = value.pop("date")
         value["y"] = value.pop("price_usd")
         serialized[0]["data"].append(value)
     return {'data':serialized}
 
+#Connects and drops and then reistablishes the DB table
+@app.route('/clear')
+def reset_db():
+    conn = psycopg2.connect("dbname=flask user=postgres password=test")
+    cur = conn.cursor()
+    #Drop the current table
+    cur.execute("DROP TABLE bitcoin_table;")
+    #Restablish it
+    cur.execute("""
+    CREATE TABLE Bitcoin_Table (
+    ID SERIAL PRIMARY KEY NOT NULL,
+    DATE DATE NOT NULL,
+    TX_VOLUME_USD REAL ,
+    ADJUSTED_TX_VOLUME_USD REAL ,
+    TX_COUNT INT , 
+    MARKETCAP_USD DOUBLE PRECISION ,
+    PRICE_USD FLOAT ,
+    EXCHANGE_VOLUME_USD FLOAT ,
+    GENERATED_COINS DOUBLE PRECISION ,
+    FEES DOUBLE PRECISION ,
+    ACTIVE_ADDRESSES INT ,
+    AVERAGE_DIFFICULTY DOUBLE PRECISION ,
+    PAYMENT_COUNT BIGINT ,
+    MEDIAN_TX_VALUE_USD DOUBLE PRECISION ,
+    MEDIAN_FEE DOUBLE PRECISION ,
+    BLOCK_SIZE BIGINT ,
+    BLOCK_COUNT INT 
+);
+    """)
 
+    conn.commit()
+    cur.close()
+    conn.close()
 
+    return {}
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -7,12 +7,14 @@ import { ResponsiveLine } from '@nivo/line'
 
 
 function App() {
-  //Determins if the program is started or stopped
+  //A flag to determine if the program is started or stopped
   const [started, setStart] = useState(false);
   //Updating variable according to request results
   const [data, setData] = useState([]);
+  // Sets a flag so that it doesnt run multiple instances of the data writer
+  const [flag, setFlag] = useState(false);
 
-  //enables an interval to loop the request for the data form the DB
+  //enables an interval to loop the query data request 
   useEffect(() => {
     if(started){
       const interval = setInterval(() => {
@@ -24,27 +26,32 @@ function App() {
     
   }, [started]);
 
+
   //Using Nivo Graph using mostly default parameters
   const MyResponsiveLine = ({ data /* see data tab */ }) => (
     <ResponsiveLine
         data={data}
         lineWidth={0}
-        isInteractive={false}
-        margin={{ top: 50, right: 11, bottom: 50, left: 60 }}
+        isInteractiv={false}
+        margin={{ top: 50, right: 11, bottom: 80, left: 60 }}
         xScale={{ type: 'point' }}
         yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: true, reverse: false }}
         yFormat=" >-.2f"
         axisTop={null}
+        colors={{ scheme: 'category10' }}
         axisRight={null}
         axisBottom={{
-            orient: 'bottom',
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 75,
-            legend: 'Date',
-            legendOffset: 36,
-            legendPosition: 'middle'
-        }}
+          orient: 'bottom',
+          tickSize: 5,
+          tickPadding: 5,
+          tickRotation: 85,
+          legend: 'Date',
+          legendOffset: 75,
+          legendPosition: 'middle'
+      }}
+        
+        
+        
         axisLeft={{
             orient: 'left',
             tickSize: 5,
@@ -55,7 +62,7 @@ function App() {
             legendPosition: 'middle'
         }}
         pointSize={10}
-        pointColor={{ theme: 'background' }}
+        pointColor={{ from: 'color', modifiers: [] }}
         pointBorderWidth={2}
         pointBorderColor={{ from: 'serieColor' }}
         pointLabelYOffset={-12}
@@ -74,17 +81,21 @@ function App() {
         axios.get('http://localhost:3000/query')
       .then(response => setData(response.data.data) ) 
     }
+  function Clear_DB() {     
+      axios.get('http://localhost:3000/clear')
+    .then(response => console.log(response) ) 
+    setData([]);
+  }
     
   function ChangeState(value) {
     //Removes button to prevent more clicks
     setStart(value);
     //ApiCall is for starting the readings from the CSV ot be put into the database
-    ApiCall();
-
-    
-    
+    if(!flag) {
+      ApiCall();
+      setFlag(true);
+    }
   }
-  
 
   return (
     <div className="App">
@@ -93,6 +104,7 @@ function App() {
           BitCoin Grapher
         </h1>
         <p>By: Matthew MacMaster</p>
+        
         {!started && 
         <Button variant="contained" color="primary" onClick={() => ChangeState(true) }>
           Start
@@ -103,8 +115,12 @@ function App() {
           Stop
         </Button> 
         } 
+        <br/>
+        <Button variant="contained" color="primary" onClick={ () => Clear_DB() }>
+          Clear DB
+        </Button> 
       </header>
-        
+      
 
       <div className="Graph">
         <MyResponsiveLine data= {data} />
