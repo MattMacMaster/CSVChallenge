@@ -1,10 +1,15 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
+from dotenv import load_dotenv
+from pathlib import Path  # Python 3.6+ only
+env_path = Path('.') / '.env'
+#Load ENV variables
+load_dotenv(dotenv_path=env_path)
 
 db = SQLAlchemy()
 
 class BitModel(db.Model, SerializerMixin):
-    __tablename__ = 'bitcoin_table'
+    __tablename__ = os.getenv('TABLE_NAME') 
 
     serialize_only = ('id', 'price_usd', 'date')
 

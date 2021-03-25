@@ -1,17 +1,24 @@
 import time
 import csv
+import os
 import json
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from models import db, BitModel
 import psycopg2
-
+from dotenv import load_dotenv
 from sqlalchemy.ext.declarative import DeclarativeMeta
+from pathlib import Path  # Python 3.6+ only
+env_path = Path('.') / '.env'
+#Load ENV variables
+load_dotenv(dotenv_path=env_path)
+
 
 #Setting up Database configurations - Add to ENV 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:test@localhost:5432/flask"
+databaseString = "postgresql://" + os.getenv('POSTGRES_USER') +"}:" + os.getenv('POSTGRES_PASSWORD') + "@localhost:5432/" + os.getenv('DB_NAME') + "}"
+app.config['SQLALCHEMY_DATABASE_URI'] = databaseString
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -73,13 +80,13 @@ def get_data():
 #Connects and drops and then reistablishes the DB table
 @app.route('/clear')
 def reset_db():
-    conn = psycopg2.connect("dbname=flask user=postgres password=test")
+    conn = psycopg2.connect("dbname=flask user={0} password={1}".format(os.getenv('POSTGRES_USER'),os.getenv('POSTGRES_PASSWORD')))
     cur = conn.cursor()
     #Drop the current table
-    cur.execute("DROP TABLE bitcoin_table;")
+    cur.execute("DROP TABLE {0};".format(os.getenv('TABLE_NAME')))
     #Restablish it
     cur.execute("""
-    CREATE TABLE Bitcoin_Table (
+    CREATE TABLE {0} (
     ID SERIAL PRIMARY KEY NOT NULL,
     DATE DATE NOT NULL,
     TX_VOLUME_USD REAL ,
@@ -98,7 +105,7 @@ def reset_db():
     BLOCK_SIZE BIGINT ,
     BLOCK_COUNT INT 
 );
-    """)
+    """.format(os.getenv('TABLE_NAME')))
 
     conn.commit()
     cur.close()
