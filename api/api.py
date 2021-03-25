@@ -17,7 +17,7 @@ load_dotenv(dotenv_path=env_path)
 
 #Setting up Database configurations - Add to ENV 
 app = Flask(__name__)
-databaseString = "postgresql://" + os.getenv('POSTGRES_USER') +"}:" + os.getenv('POSTGRES_PASSWORD') + "@localhost:5432/" + os.getenv('DB_NAME') + "}"
+databaseString = "postgresql://" + os.getenv('POSTGRES_USER') +":" + os.getenv('POSTGRES_PASSWORD') + "@localhost:5432/" + os.getenv('DB_NAME')
 app.config['SQLALCHEMY_DATABASE_URI'] = databaseString
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)

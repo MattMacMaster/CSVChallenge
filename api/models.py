@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
+import os
 from dotenv import load_dotenv
 from pathlib import Path  # Python 3.6+ only
 env_path = Path('.') / '.env'

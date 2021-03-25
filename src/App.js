@@ -1,6 +1,7 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
+
 import axios from 'axios';
 import { ResponsiveLine } from '@nivo/line'
 
@@ -13,6 +14,7 @@ function App() {
   const [data, setData] = useState([]);
   // Sets a flag so that it doesnt run multiple instances of the data writer
   const [flag, setFlag] = useState(false);
+
 
   //enables an interval to loop the query data request 
   useEffect(() => {
@@ -31,7 +33,6 @@ function App() {
   const MyResponsiveLine = ({ data /* see data tab */ }) => (
     <ResponsiveLine
         data={data}
-        lineWidth={0}
         isInteractiv={false}
         margin={{ top: 50, right: 11, bottom: 80, left: 60 }}
         xScale={{ type: 'point' }}
@@ -99,27 +100,35 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>
-          BitCoin Grapher
-        </h1>
-        <p>By: Matthew MacMaster</p>
+      <body>
+        <ul>
+          <li>
+            <Button variant="contained" size="large"  color="primary"  onClick={ () => Clear_DB() }>
+              Clear DB
+            </Button> 
+          </li>
+          {!started && 
+            <li>  
+            <Button variant="contained" size="large" color="primary" onClick={() => ChangeState(true) }>
+              Start
+            </Button> 
+          </li>
+          }
+          {started &&
+          <li>
+            <Button variant="contained" size="large" color="primary"  onClick={ () => ChangeState(false) }>
+            Stop
+            </Button> 
+          </li>
+          } 
+          <li><a>By: Matthew MacMaster</a></li>
+
+          <li><a>BitCoin Grapher</a></li>
         
-        {!started && 
-        <Button variant="contained" color="primary" onClick={() => ChangeState(true) }>
-          Start
-        </Button> 
-        }
-        {started && 
-        <Button variant="contained" color="primary" onClick={ () => ChangeState(false) }>
-          Stop
-        </Button> 
-        } 
-        <br/>
-        <Button variant="contained" color="primary" onClick={ () => Clear_DB() }>
-          Clear DB
-        </Button> 
-      </header>
+          
+        
+        </ul>
+      </body>
       
 
       <div className="Graph">
