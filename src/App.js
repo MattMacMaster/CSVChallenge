@@ -51,8 +51,6 @@ function App() {
           legendPosition: 'middle'
       }}
         
-        
-        
         axisLeft={{
             orient: 'left',
             tickSize: 5,
@@ -82,6 +80,7 @@ function App() {
         axios.get('http://localhost:3000/query')
       .then(response => setData(response.data.data) ) 
     }
+  //This function drops the table and re establishes it - clearing the table
   function Clear_DB() {     
       axios.get('http://localhost:3000/clear')
     .then(response => console.log(response) ) 
